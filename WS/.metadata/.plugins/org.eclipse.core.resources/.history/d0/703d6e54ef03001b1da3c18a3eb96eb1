@@ -1,0 +1,45 @@
+package com.netlink.mzk.controller;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.websocket.server.PathParam;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import com.netlink.mzk.model.CatalogItem;
+import com.netlink.mzk.model.Movie;
+import com.netlink.mzk.model.Rating;
+
+@RestController
+@RequestMapping("/catalog")
+public class MovieCatalogController {
+	private static final String USER_ID_PATH = "userId";
+	private static final String USER_ID = "/{userId}";
+	private static final String MOVIE_INFO_SERVICE_URI = "http://localhost:8085/movie/";
+	RestTemplate restTemplate=new RestTemplate();
+
+	@GetMapping(USER_ID)
+	public List<CatalogItem> getCatalogItem1(@PathVariable(USER_ID_PATH) String userId) {
+		return Collections.singletonList(new CatalogItem("Avengers:End Game", "Thanos Game will be end", 8));
+		
+		
+
+	}
+
+	@GetMapping(USER_ID)
+	public List<CatalogItem> getCatalogItem(@PathVariable(USER_ID_PATH) String userId) {
+		List<Rating> ratings = Arrays.asList(new Rating("M-1456", 6), new Rating("M-8652", 7), new Rating("M-0986", 5));
+		ratings.stream().map(rating -> {
+			Movie movie = restTemplate.getForObject(MOVIE_INFO_SERVICE_URI + rating.getMovieId(), Movie.class);
+			return new CatalogItem("Avengers:End Game", "Thanos Game will be end", 8);
+		}).collect(Collectors.toList());
+
+	}	
+}

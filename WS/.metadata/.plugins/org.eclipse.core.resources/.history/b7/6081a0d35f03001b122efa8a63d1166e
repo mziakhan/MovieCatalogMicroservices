@@ -1,0 +1,5 @@
+package com.netlink.mzk.model;
+
+public class Rating {
+
+}
